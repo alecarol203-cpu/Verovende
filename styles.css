@@ -251,7 +251,7 @@ em, .italic { font-style: italic; }
 }
 .hero-noise {
   position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .5;
-  background-image: url("assets/img/grain.svg");
+  background-image: url("grain.svg");
   background-size: 480px 480px;
 }
 .hero-glow {
@@ -403,7 +403,7 @@ em, .italic { font-style: italic; }
 }
 .statement-band::before {
   content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .35;
-  background-image: url("assets/img/grain.svg"); background-size: 480px 480px;
+  background-image: url("grain.svg"); background-size: 480px 480px;
 }
 .statement-band::after {
   content: ""; position: absolute; z-index: 0; pointer-events: none;
