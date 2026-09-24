@@ -701,10 +701,50 @@ em, .italic { font-style: italic; }
 .gallery-arrow:active { transform: scale(.94); }
 .gallery-arrow .icon { width: 18px; height: 18px; }
 .gallery-arrow-prev .icon { transform: scaleX(-1); }
+.gallery-photo img { cursor: zoom-in; }
 @media (max-width: 560px) {
   .gallery { gap: .5rem; }
   .gallery-arrow { width: 34px; height: 34px; }
   .gallery-arrow .icon { width: 15px; height: 15px; }
+}
+
+/* --- Lightbox (click a gallery photo to enlarge) --- */
+.lightbox {
+  position: fixed; inset: 0; z-index: 2000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(23,21,14,.92);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .3s var(--ease-out);
+  padding: clamp(1rem, 4vw, 3rem);
+}
+.lightbox.is-open { opacity: 1; visibility: visible; pointer-events: auto; }
+.lightbox-img {
+  max-width: min(92vw, 900px); max-height: 86vh; width: auto; height: auto;
+  object-fit: contain; border-radius: var(--radius-sm);
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  background: var(--paper);
+  transform: scale(.96); transition: transform .3s var(--ease-out);
+}
+.lightbox.is-open .lightbox-img { transform: scale(1); }
+.lightbox-close, .lightbox-arrow {
+  position: fixed; z-index: 2001;
+  width: 46px; height: 46px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.3); color: var(--paper);
+  cursor: pointer; transition: background .25s var(--ease-out), transform .25s var(--ease-out);
+}
+.lightbox-close:hover, .lightbox-arrow:hover { background: var(--lime); border-color: var(--lime); color: var(--ink); transform: scale(1.08); }
+.lightbox-close .icon, .lightbox-arrow .icon { width: 20px; height: 20px; }
+.lightbox-close { top: clamp(1rem, 3vw, 2rem); right: clamp(1rem, 3vw, 2rem); }
+.lightbox-arrow-prev { left: clamp(.6rem, 3vw, 2rem); }
+.lightbox-arrow-next { right: clamp(.6rem, 3vw, 2rem); }
+.lightbox-arrow-prev .icon { transform: scaleX(-1); }
+@media (max-width: 640px) {
+  .lightbox-close, .lightbox-arrow { width: 38px; height: 38px; }
+  .lightbox-close .icon, .lightbox-arrow .icon { width: 16px; height: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lightbox, .lightbox-img { transition: none !important; }
 }
 
 .subsection {
