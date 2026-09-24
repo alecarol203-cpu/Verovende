@@ -258,6 +258,90 @@
     sections.forEach(function (s) { io.observe(s); });
   }
 
+  /* ---------- Product photo galleries (rotating carousel, side arrows) ---------- */
+  function initGalleries() {
+    var galleries = $$(".gallery");
+    if (!galleries.length) return;
+
+    var dur = reduced ? 0 : 500;
+
+    galleries.forEach(function (gallery) {
+      var track = $(".gallery-track", gallery);
+      var prevBtn = $(".gallery-arrow-prev", gallery);
+      var nextBtn = $(".gallery-arrow-next", gallery);
+      if (!track || !prevBtn || !nextBtn) return;
+
+      var busy = false;
+
+      function slideWidth() {
+        var first = track.children[0];
+        if (!first) return 0;
+        var cs = getComputedStyle(track);
+        var gap = parseFloat(cs.columnGap || cs.gap) || 0;
+        return first.getBoundingClientRect().width + gap;
+      }
+
+      function release() { busy = false; }
+
+      function goNext() {
+        var items = track.children;
+        if (busy || items.length < 2) return;
+        busy = true;
+        var w = slideWidth();
+        if (!dur || !w) {
+          track.appendChild(items[0]);
+          release();
+          return;
+        }
+        track.style.transition = "transform " + dur + "ms var(--ease-out, ease)";
+        track.style.transform = "translateX(" + (-w) + "px)";
+        var done = false;
+        var finish = function () {
+          if (done) return;
+          done = true;
+          track.removeEventListener("transitionend", finish);
+          track.style.transition = "none";
+          track.appendChild(items[0]);
+          track.style.transform = "translateX(0)";
+          release();
+        };
+        track.addEventListener("transitionend", finish);
+        setTimeout(finish, dur + 120);
+      }
+
+      function goPrev() {
+        var items = track.children;
+        if (busy || items.length < 2) return;
+        busy = true;
+        var last = items[items.length - 1];
+        track.style.transition = "none";
+        track.insertBefore(last, track.firstChild);
+        var w = slideWidth();
+        if (!dur || !w) {
+          track.style.transform = "translateX(0)";
+          release();
+          return;
+        }
+        track.style.transform = "translateX(" + (-w) + "px)";
+        void track.offsetWidth; /* force reflow so the jump above isn't animated */
+        var done = false;
+        var finish = function () {
+          if (done) return;
+          done = true;
+          track.removeEventListener("transitionend", finish);
+          release();
+        };
+        track.style.transition = "transform " + dur + "ms var(--ease-out, ease)";
+        track.style.transform = "translateX(0)";
+        track.addEventListener("transitionend", finish);
+        setTimeout(finish, dur + 120);
+      }
+
+      nextBtn.addEventListener("click", goNext);
+      prevBtn.addEventListener("click", goPrev);
+    });
+  }
+
   function boot() {
     safe(initNav, "initNav");
     safe(initSplitText, "initSplitText");
@@ -266,6 +350,7 @@
     safe(initHeroParallax, "initHeroParallax");
     safe(initTilt, "initTilt");
     safe(initCatNav, "initCatNav");
+    safe(initGalleries, "initGalleries");
     document.documentElement.classList.add("is-ready");
   }
 
