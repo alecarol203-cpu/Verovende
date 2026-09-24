@@ -342,6 +342,79 @@
     });
   }
 
+  /* ---------- Lightbox: click a gallery photo to see it enlarged ---------- */
+  function initLightbox() {
+    var lb = document.getElementById("lightbox");
+    var img = document.getElementById("lightboxImg");
+    if (!lb || !img) return;
+
+    var closeBtn = $(".lightbox-close", lb);
+    var prevBtn = $(".lightbox-arrow-prev", lb);
+    var nextBtn = $(".lightbox-arrow-next", lb);
+    if (!closeBtn || !prevBtn || !nextBtn) return;
+
+    var list = [];
+    var index = -1;
+    var lastFocused = null;
+
+    function render() {
+      var el = list[index];
+      if (!el) return;
+      img.src = el.currentSrc || el.src;
+      img.alt = el.alt || "";
+    }
+
+    function open(imgs, i) {
+      list = imgs;
+      index = i;
+      render();
+      lastFocused = document.activeElement;
+      lb.classList.add("is-open");
+      lb.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      closeBtn.focus();
+    }
+
+    function close() {
+      lb.classList.remove("is-open");
+      lb.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      if (lastFocused && typeof lastFocused.focus === "function") lastFocused.focus();
+    }
+
+    function step(dir) {
+      if (!list.length) return;
+      index = (index + dir + list.length) % list.length;
+      render();
+    }
+
+    document.addEventListener("click", function (e) {
+      var photo = e.target.closest(".gallery-photo");
+      if (!photo) return;
+      var clicked = photo.querySelector("img");
+      if (!clicked) return;
+      var track = photo.closest(".gallery-track");
+      var imgs = track ? $$(".gallery-photo img", track) : [clicked];
+      var i = imgs.indexOf(clicked);
+      open(imgs, i < 0 ? 0 : i);
+    });
+
+    closeBtn.addEventListener("click", close);
+    prevBtn.addEventListener("click", function () { step(-1); });
+    nextBtn.addEventListener("click", function () { step(1); });
+
+    lb.addEventListener("click", function (e) {
+      if (e.target === lb) close();
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (!lb.classList.contains("is-open")) return;
+      if (e.key === "Escape") close();
+      else if (e.key === "ArrowLeft") step(-1);
+      else if (e.key === "ArrowRight") step(1);
+    });
+  }
+
   function boot() {
     safe(initNav, "initNav");
     safe(initSplitText, "initSplitText");
@@ -351,6 +424,7 @@
     safe(initTilt, "initTilt");
     safe(initCatNav, "initCatNav");
     safe(initGalleries, "initGalleries");
+    safe(initLightbox, "initLightbox");
     document.documentElement.classList.add("is-ready");
   }
 
