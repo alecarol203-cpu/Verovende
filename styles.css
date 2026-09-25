@@ -755,3 +755,41 @@ em, .italic { font-style: italic; }
 .subsection-head .icon { width: 24px; height: 24px; color: var(--lime-deep); }
 .subsection-head h3 { font-size: 1.15rem; }
 .subsection p.subsection-note { color: var(--ink-soft); font-size: .92rem; max-width: 62ch; margin-bottom: 1.2rem; }
+
+/* --- Testimonios (carrusel) --- */
+.testimonials .section-head { margin-bottom: 2rem; }
+.testi-carousel { display: flex; align-items: center; gap: 1rem; }
+.testi-track {
+  flex: 1; min-width: 0; display: flex; gap: 1.1rem;
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  scrollbar-width: none; padding: .4rem .1rem 1rem; outline: none;
+}
+.testi-track::-webkit-scrollbar { display: none; }
+.testi-card {
+  margin: 0; flex: 0 0 100%; scroll-snap-align: start;
+  display: flex; flex-direction: column; gap: 1rem;
+  background: var(--paper); border: 1px solid var(--line-2); border-radius: var(--radius);
+  padding: clamp(1.4rem, 3vw, 2rem); box-shadow: 0 20px 40px -32px rgba(23,21,14,.35);
+}
+@media (min-width: 760px) { .testi-card { flex-basis: calc((100% - 1.1rem) / 2); } }
+@media (min-width: 1060px) { .testi-card { flex-basis: calc((100% - 2 * 1.1rem) / 3); } }
+.testi-quote { width: 34px; height: 34px; color: var(--lime); }
+.testi-tag {
+  align-self: flex-start; font-size: .78rem; font-weight: 600; letter-spacing: .01em;
+  color: var(--lime-deep); background: var(--lime-tint); border-radius: 999px; padding: .35rem .8rem;
+}
+.testi-card blockquote {
+  margin: 0; flex: 1; font-family: var(--serif); font-size: 1.08rem; line-height: 1.6; color: var(--ink-soft);
+}
+.testi-card figcaption { font-size: .9rem; font-weight: 600; color: var(--ink-mute); }
+.testi-dots { display: flex; justify-content: center; gap: .5rem; margin-top: .6rem; }
+.testi-dots button {
+  width: 9px; height: 9px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+  background: var(--line); transition: background .25s var(--ease-out), transform .25s var(--ease-out);
+}
+.testi-dots button.is-active { background: var(--lime); transform: scale(1.3); }
+@media (max-width: 560px) {
+  .testi-carousel { gap: .5rem; }
+  .testi-carousel .gallery-arrow { display: none; }
+  .testi-card blockquote { font-size: 1rem; }
+}
